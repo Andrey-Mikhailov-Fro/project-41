@@ -1,1 +1,6 @@
-{}
+{
+  "scripts": {
+    "start": "cd react-webpack-project && npm start",
+    "build": "cd react-webpack-project && npm build"
+  }
+}
