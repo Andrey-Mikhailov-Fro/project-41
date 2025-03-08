@@ -1,12 +1,19 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
+import "swiper/css";
+import "swiper/css/bundle";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
+import { FreeMode, Navigation, Scrollbar } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import end from "../public/scrollToEnd.svg";
+import left from "../public/switchBtnLeft.svg";
+import right from "../public/switchBtnRight.svg";
 import "./Block.scss";
-import { Event, events, Period, periods } from "./usefullData";
-import useWindowSize from "./useWindowSize";
 import DesctopElement from "./DesctopCircle";
 import MobileScale from "./MobileScale";
-import left from '../public/switchBtnLeft.svg';
-import right from '../public/switchBtnRight.svg';
-import end from '../public/scrollToEnd.svg';
+import { Event, events, Period, periods } from "./usefullData";
+import useWindowSize from "./useWindowSize";
 
 export type EventCardProps = {
   eventOfYear: Event;
@@ -40,41 +47,7 @@ export type MobileScaleProps = {
 export default function Block() {
   const [currentPeriod, setCurrentPeriod] = useState(1);
   const { width } = useWindowSize();
-  const listRef = useRef<HTMLUListElement>(null);
-  const [showScrollStart, setShowScrollStart] = useState(false);
-
-  const scrollToEnd = () => {
-    if (listRef.current) {
-      listRef.current.scrollTo({
-        left: listRef.current.scrollWidth,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  const scrollToStart = () => {
-    if (listRef.current) {
-      listRef.current.scrollTo({
-        left: 0,
-        behavior: "smooth",
-      });
-    }
-  };
-
-  const checkScroll = () => {
-    if (listRef.current) {
-      const { scrollLeft } = listRef.current;
-      setShowScrollStart(scrollLeft > 0);
-    }
-  };
-
-  useEffect(() => {
-    const list = listRef.current;
-    if (list) {
-      list.addEventListener('scroll', checkScroll);
-      return () => list.removeEventListener('scroll', checkScroll);
-    }
-  }, []);
+  const swiperRef = useRef<any>(null);
 
   const period = periods.find((item) => item.id === currentPeriod) as Period;
   const actualEvents = events.filter(
@@ -140,10 +113,10 @@ export default function Block() {
 
   const EventCard = ({ eventOfYear }: EventCardProps) => {
     return (
-      <li key={eventOfYear.id} className="card">
+      <div key={eventOfYear.id}>
         <h3 className="event-card-header">{eventOfYear.year}</h3>
         <p className="event-card-description">{eventOfYear.description}</p>
-      </li>
+      </div>
     );
   };
 
@@ -162,21 +135,51 @@ export default function Block() {
           <h2 key={period.category} className="event-header">
             {period.category}
           </h2>
-          <div className="event-list-container">
-            <ul ref={listRef} className="event-list">
-              {actualEvents.map((event) => (
-                <EventCard eventOfYear={event} />
-              ))}
-            </ul>
-            {showScrollStart && (<button
-              onClick={scrollToStart}
-              className="event-scroll-start-button"
+          <div style={{ paddingLeft: "10%" }}>
+            <Swiper
+              ref={swiperRef}
+              modules={[Navigation, FreeMode]}
+              spaceBetween={50}
+              slidesPerView={3}
+              navigation={{
+                enabled: true,
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+              }}
+              freeMode
+              breakpoints={{
+                320: {
+                  slidesPerView: 2,
+                },
+                1024: {
+                  slidesPerView: 3,
+                },
+              }}
             >
-              <img alt="scroll" src={end} />
-            </button>)}
-            <button onClick={scrollToEnd} className="event-scroll-button">
-              <img alt="scroll" src={end} />
-            </button>
+              {actualEvents.map((event) => (
+                <SwiperSlide>
+                  <EventCard eventOfYear={event} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+            <div
+              className="swiper-button-next"
+              onClick={() => {
+                if (swiperRef.current) {
+                  swiperRef.current.swiper.slideTo(swiperRef.current.swiper.slides.length - 1);
+                }
+              }}
+            >
+              <img src={end} alt="scrl" />
+            </div>
+            <div className="swiper-button-prev" onClick={() => {
+                console.log(swiperRef);
+                if (swiperRef.current) {
+                  swiperRef.current.swiper.slideTo(0);
+                }
+              }}>
+              <img src={end} alt="scrl" />
+            </div>
           </div>
         </div>
         <div className="switcher">

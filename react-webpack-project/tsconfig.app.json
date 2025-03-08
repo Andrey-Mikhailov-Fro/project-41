@@ -8,12 +8,14 @@
       "skipLibCheck": true,
   
       /* Bundler mode */
-      "moduleResolution": "bundler",
+      "moduleResolution": "node",
       "allowImportingTsExtensions": true,
       "isolatedModules": true,
       "moduleDetection": "force",
       "noEmit": true,
       "jsx": "react-jsx",
+      "types": ["swiper"],
+      "forceConsistentCasingInFileNames": true,
   
       /* Linting */
       "strict": true,
@@ -22,6 +24,7 @@
       "noFallthroughCasesInSwitch": true,
       "noUncheckedSideEffectImports": true
     },
-    "include": ["src", "public"]
+    "include": ["src/**/*", "public/**/*"],
+    "exclude": ["node_modules", "src/**/*.spec.ts"]
   }
   

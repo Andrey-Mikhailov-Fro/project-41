@@ -19,7 +19,7 @@ export default function PeriodScale({
   const angle = (360 / number) * (id + 1);
 
   const radiusMd = width * 0.3 / 2;
-  const radiusXl = width * 0.5 / 2;
+  const radiusXl = width * 0.4 / 2;
 
   const radius = (width > 1440) && (height > 1080) ? radiusXl : radiusMd; 
 

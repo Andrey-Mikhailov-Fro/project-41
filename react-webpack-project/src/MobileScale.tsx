@@ -5,7 +5,7 @@ import { periods } from "./usefullData";
 
 export default function MobileScale({ active, setActive }: MobileElementProps) {
     return (
-      <div className="scale-container">
+      <div key="scale" className="scale-container">
         <div className="scale">
           {periods.map((gap) => (
             <MobileScaleButton
